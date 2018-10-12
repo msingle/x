@@ -72,3 +72,9 @@ func NAlignBits(num uint64) int {
 func Lgb2(num uint64) int {
 	return blocks.lgb2(num)
 }
+
+// DEV SECTION
+
+func findslot(n int, wsize int, capacity int) int {
+	return ((n * wsize) / capacity) / 2
+}
