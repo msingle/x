@@ -1,3 +1,25 @@
+/* MIT License
+*
+* Copyright (c) 2018 Mike Taghavi <mitghi[at]gmail.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+ */
+
 package pointers
 
 import (
@@ -52,9 +74,9 @@ type tstslice struct {
 func init() {
 	const _archfmt = "========================\n%-6s%8d\n%-6s%12d\n%-6s%11d\n========================\n"
 	fmt.Printf(_archfmt,
-		"Address size", archADDRSIZE,
-		"Tag size", archMAXTAG,
-		"Word size", archWORDSIZE)
+		"Address size", ArchADDRSIZE,
+		"Tag size", ArchMAXTAG,
+		"Word size", ArchWORDSIZE)
 }
 
 func TestAtomicArray(t *testing.T) {
@@ -65,11 +87,11 @@ func TestAtomicArray(t *testing.T) {
 		sval *Sample
 		ok   bool
 	)
-	if !SetArraySlot(unsafe.Pointer(&a.nodes), 6, archPTRSIZE, unsafe.Pointer(s)) {
+	if !SetArraySlot(unsafe.Pointer(&a.nodes), 6, ArchPTRSIZE, unsafe.Pointer(s)) {
 		t.Fatal("inconsistent state, cannot set slot.")
 	}
 	fmt.Println(a.nodes)
-	sptr, ok = PopArraySlot(unsafe.Pointer(&a.nodes), 6, archPTRSIZE)
+	sptr, ok = PopArraySlot(unsafe.Pointer(&a.nodes), 6, ArchPTRSIZE)
 	if !ok {
 		t.Fatal("inconsistent state, cannot pop slot.")
 	}
@@ -123,14 +145,14 @@ func TestAtomicSlice(t *testing.T) {
 		sval *Sample
 		ok   bool
 	)
-	if !SetSliceSlot(unsafe.Pointer(&a.nodes), 0, archPTRSIZE, unsafe.Pointer(s)) {
+	if !SetSliceSlot(unsafe.Pointer(&a.nodes), 0, ArchPTRSIZE, unsafe.Pointer(s)) {
 		t.Fatal("inconsistent state, cannot set slot.")
 	}
 	if a.nodes[0] == nil {
 		t.Fatal("inconsistent state, value is not inserted.")
 	}
 	fmt.Printf("nodes: %#x\n", a.nodes)
-	sptr, ok = PopSliceSlot(unsafe.Pointer(&a.nodes), 0, archPTRSIZE)
+	sptr, ok = PopSliceSlot(unsafe.Pointer(&a.nodes), 0, ArchPTRSIZE)
 	if !ok {
 		t.Fatal("inconsistent state, cannot pop slot.")
 	}
@@ -223,11 +245,11 @@ func TestRDCSS2x(t *testing.T) {
 		s       *tstsample     = &tstsample{value: 64}
 		n       *tstsample     = &tstsample{value: 128}
 		ring    *ststaligned   = &ststaligned{nodes: make([]unsafe.Pointer, 8)}
-		slotptr unsafe.Pointer = unsafe.Pointer(OffsetSliceSlot(unsafe.Pointer(&ring.nodes), 1, archPTRSIZE))
+		slotptr unsafe.Pointer = unsafe.Pointer(OffsetSliceSlot(unsafe.Pointer(&ring.nodes), 1, ArchPTRSIZE))
 		rdiPtr  unsafe.Pointer = unsafe.Pointer(&ring.rdi)
 		vptr    **tstsample    // value pointer
 	)
-	if !SetSliceSlot(unsafe.Pointer(&ring.nodes), 1, archPTRSIZE, unsafe.Pointer(&s)) {
+	if !SetSliceSlot(unsafe.Pointer(&ring.nodes), 1, pointers.ArchPTRSIZE, unsafe.Pointer(&s)) {
 		t.Fatal("inconsistent state, can't write to slice/slot.")
 	}
 	if ring.nodes[1] == nil {
