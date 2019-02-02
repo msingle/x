@@ -98,9 +98,5 @@ func btoiR(b bool) uint32 {
 // itob converts a `uint32` to
 // `boolean`.
 func itob(ui uint32) bool {
-	if ui == 1 {
-		return true
-	}
-
-	return false
+	return ui == 1
 }
